@@ -1,0 +1,18 @@
+{
+  "name": "mr-nom-server",
+  "version": "1.0.0",
+  "description": "mr nom server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Tim Klein Nijenhuis <tim@hetorus.nl>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "node-persist": "0.0.11",
+    "request": "^2.74.0"
+  },
+  "packageManager": "yarn@3.6.3"
+}

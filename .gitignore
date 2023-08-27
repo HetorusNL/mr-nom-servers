@@ -1,0 +1,5 @@
+node_modules
+
+# ignore everything in .yarn, except the releases/ folder
+**/.yarn/*
+!**/.yarn/releases
