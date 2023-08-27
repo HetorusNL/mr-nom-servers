@@ -148,16 +148,6 @@ app.post("/highscores", function (req, res) {
   log("post request to /highscores");
   var userAgent = req.headers["user-agent"];
   log("HIGHSCORE POST: user agent: " + userAgent);
-  if (userAgent.indexOf("Android") == -1) {
-    res
-      .status(403)
-      .json({
-        status:
-          "Illegal device, please send highscores from an Android device!!!",
-      })
-      .send();
-    return;
-  }
   var accessToken = req.query.accessToken;
   var user = getUserByAccessToken(accessToken);
   if (user) {
@@ -327,8 +317,6 @@ function log(logMessage) {
   }
   currentLog += getFormattedDate() + logMessage + "\n";
   storage.setItem("log.txt", currentLog);
-  // to view log, open in n++ and replace "\n" with real \n
-  // since '\n' are added as \ and n characters in the log file
 }
 
 function getFormattedDate() {
