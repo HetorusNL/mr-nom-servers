@@ -1,0 +1,63 @@
+name: Branches and tags CI/CD
+
+on:
+  push:
+
+jobs:
+  build-and-push-container:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout the repo to $GITHUB_WORKSPACE
+      - uses: actions/checkout@v3
+
+      # login to docker hub
+      - name: Login to Dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # login to github container registry
+      - name: Login to ghcr.io
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # build and push the mr-nom-server docker image to ghcr.io
+      - name: Build and Push Image to ghcr.io
+        run: ./gha/build-container.sh
+        env:
+          CI_REGISTRY: ghcr.io/hetorusnl/mr-nom-server
+          DOCKERFILE: mr-nom-server.Dockerfile
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
+
+      # build and push the mr-nom-server docker image to docker hub
+      - name: Build and Push Image to Dockerhub
+        run: ./gha/build-container.sh
+        env:
+          CI_REGISTRY: hetorusnl/mr-nom-server
+          DOCKERFILE: mr-nom-server.Dockerfile
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
+
+      # build and push the mr-nom-server-python docker image to ghcr.io
+      - name: Build and Push Image to ghcr.io
+        run: ./gha/build-container.sh
+        env:
+          CI_REGISTRY: ghcr.io/hetorusnl/mr-nom-server-python
+          DOCKERFILE: mr-nom-server-python.Dockerfile
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
+
+      # build and push the mr-nom-server-python docker image to docker hub
+      - name: Build and Push Image to Dockerhub
+        run: ./gha/build-container.sh
+        env:
+          CI_REGISTRY: hetorusnl/mr-nom-server-python
+          DOCKERFILE: mr-nom-server-python.Dockerfile
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'

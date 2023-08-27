@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  mr-nom-server:
+    image: hetorusnl/mr-nom-server
+    container_name: mr-nom-server
+    ports:
+      - 1337:1337
+    environment:
+      - FCM_TOKEN=insert-fcm-token-here
+
+  mr-nom-server-python:
+    image: hetorusnl/mr-nom-server-python
+    container_name: mr-nom-server-python
+    ports:
+      - 1338:1338
+    environment:
+      - FCM_TOKEN=insert-fcm-token-here
