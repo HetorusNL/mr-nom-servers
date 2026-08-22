@@ -8,8 +8,9 @@ services:
       - 1337:1337
     environment:
       - FCM_TOKEN=insert-fcm-token-here
+      - PORT=1337
     volumes:
-      - /path/to/mr-nom-server/persist:/code/persist
+      - /path/to/mr-nom-server/persist:/src/persist
 
   mr-nom-server-python:
     image: hetorusnl/mr-nom-server-python
@@ -18,5 +19,6 @@ services:
       - 1338:1338
     environment:
       - FCM_TOKEN=insert-fcm-token-here
+      - PORT=1338
     volumes:
-      - /path/to/mr-nom-server-python/persist:/code/persist
+      - /path/to/mr-nom-server-python/persist:/src/persist

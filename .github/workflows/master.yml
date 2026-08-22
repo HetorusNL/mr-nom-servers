@@ -31,7 +31,7 @@ jobs:
         run: ./gha/build-container.sh
         env:
           CI_REGISTRY: ghcr.io/hetorusnl/mr-nom-server
-          DOCKERFILE: mr-nom-server.Dockerfile
+          DOCKERFILE: gha/mr-nom-server.Dockerfile
           REF_NAME: ${{ github.ref_name }}
           REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
 
@@ -40,24 +40,6 @@ jobs:
         run: ./gha/build-container.sh
         env:
           CI_REGISTRY: hetorusnl/mr-nom-server
-          DOCKERFILE: mr-nom-server.Dockerfile
-          REF_NAME: ${{ github.ref_name }}
-          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
-
-      # build and push the mr-nom-server-python docker image to ghcr.io
-      - name: Build and Push Image to ghcr.io
-        run: ./gha/build-container.sh
-        env:
-          CI_REGISTRY: ghcr.io/hetorusnl/mr-nom-server-python
-          DOCKERFILE: mr-nom-server-python.Dockerfile
-          REF_NAME: ${{ github.ref_name }}
-          REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
-
-      # build and push the mr-nom-server-python docker image to docker hub
-      - name: Build and Push Image to Dockerhub
-        run: ./gha/build-container.sh
-        env:
-          CI_REGISTRY: hetorusnl/mr-nom-server-python
-          DOCKERFILE: mr-nom-server-python.Dockerfile
+          DOCKERFILE: gha/mr-nom-server.Dockerfile
           REF_NAME: ${{ github.ref_name }}
           REF_TYPE: ${{ github.ref_type }} # 'branch' or 'tag'
