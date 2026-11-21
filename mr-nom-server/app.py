@@ -54,6 +54,15 @@ def log(log_message):
     storage_set("log.txt", current_log)
 
 
+def get_highscores():
+    highscores = storage_get_json("highscores")
+    if highscores:
+        # highscores from before the source field was added are from the app
+        for highscore in highscores:
+            highscore.setdefault("source", "app")
+    return highscores
+
+
 def get_user_by_access_token(access_token):
     users = storage_get_json("users")
     if users:
@@ -156,7 +165,7 @@ def highscores_local():
     access_token = request.args.get("accessToken")
     user = get_user_by_access_token(access_token)
     if user:
-        highscores = storage_get_json("highscores")
+        highscores = get_highscores()
         if highscores:
             local_highscores = []
             for highscore in highscores:
@@ -174,7 +183,7 @@ def highscores_local():
 def highscores_global():
     log("get request to /highscores/global")
     limit = request.args.get("limit")
-    highscores = storage_get_json("highscores")
+    highscores = get_highscores()
     if highscores:
         highscores.sort(key=lambda h: (-h["score"], h["time"]))
 
@@ -190,15 +199,9 @@ def post_highscore():
     log("post request to /highscores")
     user_agent = request.headers.get("user-agent", "")
     log("HIGHSCORE POST: user agent: " + user_agent)
-    if "Android" not in user_agent:
-        return (
-            jsonify(
-                {
-                    "status": "Illegal device, please send highscores from an Android device!!!"
-                }
-            ),
-            403,
-        )
+    # highscores from the Android app are marked "app", the others (the
+    # python version, in the browser or on desktop) are marked "web"
+    source = "app" if "Android" in user_agent else "web"
 
     access_token = request.args.get("accessToken")
     user = get_user_by_access_token(access_token)
@@ -210,6 +213,7 @@ def post_highscore():
             "score": data.get("score", 0),
             "time": data.get("time", 0),
             "date": int(datetime.now().timestamp() * 1000),
+            "source": source,
         }
 
         log(
@@ -217,11 +221,13 @@ def post_highscore():
             + highscore["user"]
             + ", with score: "
             + str(highscore["score"])
+            + ", from: "
+            + source
         )
 
         check_highscore(user, highscore["score"], highscore["time"])
 
-        highscores = storage_get_json("highscores")
+        highscores = get_highscores()
 
         if not highscores:
             highscores = []
@@ -236,7 +242,7 @@ def post_highscore():
 
 
 def check_highscore(user, score, time):
-    highscores = storage_get_json("highscores")
+    highscores = get_highscores()
     if highscores:
         highscores.sort(key=lambda h: (-h["score"], h["time"]))
 
