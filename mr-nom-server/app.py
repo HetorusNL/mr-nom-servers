@@ -77,11 +77,18 @@ def init_last_highscore_id():
     else:
         last_highscore_id = 8000
 
+    # never hand out ids that are already in use, older versions stored the
+    # counter before incrementing it, which reused the last id after a restart
+    highscores = storage_get_json("highscores")
+    if highscores:
+        last_highscore_id = max(last_highscore_id, max(h["id"] for h in highscores))
+
 
 def new_id():
     global last_highscore_id
-    storage_set("last_highscore_id", str(last_highscore_id))
+    # increment first, so the stored value is the last id actually handed out
     last_highscore_id += 1
+    storage_set("last_highscore_id", str(last_highscore_id))
     return last_highscore_id
 
 
